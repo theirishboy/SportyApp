@@ -1,7 +1,6 @@
 package com.example.yoursportapp.android
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,11 +8,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.yoursportapp.Greeting
 import androidx.compose.runtime.*
+import com.example.yoursportapp.data.UserDatabaseDAO
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+    private val userDao: UserDatabaseDAO by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
@@ -24,9 +26,9 @@ class MainActivity : ComponentActivity() {
                     var text by remember { mutableStateOf("Loading") }
                     LaunchedEffect(true) {
                         text = try {
-                            // Greeting().greet()
-                            Greeting().signIn("toto", "string")
-                            Greeting().getSportSession()
+                            userDao.isServerUp()
+                            userDao.signIn("toto", "string")
+                            userDao.getSportSession()
 
                         } catch (e: Exception) {
                             e.localizedMessage ?: "error"

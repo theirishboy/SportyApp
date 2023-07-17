@@ -1,4 +1,5 @@
 package com.example.yoursportapp.Module
 
-class appModule {
-}
+import com.example.yoursportapp.data.UserDatabaseDAO
+
+fun appModule() = listOf(commonModule)

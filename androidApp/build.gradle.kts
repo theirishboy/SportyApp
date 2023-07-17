@@ -37,6 +37,7 @@ android {
         jvmTarget = "1.8"
     }
 }
+val koin = "3.2.0"
 
 dependencies {
     implementation(project(":shared"))
@@ -46,4 +47,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.compose.material:material:1.4.3")
     implementation("androidx.activity:activity-compose:1.7.1")
+    implementation("io.insert-koin:koin-core:${koin}")
+    implementation("io.insert-koin:koin-test:${koin}")
+    implementation("io.insert-koin:koin-android:${koin}")
 }

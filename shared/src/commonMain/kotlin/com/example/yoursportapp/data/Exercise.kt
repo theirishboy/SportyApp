@@ -10,7 +10,7 @@ data class Exercise(
     @SerialName("name")
     val name: String,
     @SerialName("description")
-    val description : String,
+    val description : String?,
     @SerialName("muscular_groups")
     val muscular_groups : MutableList<Exercise>,
     @SerialName("sports_sessions")
