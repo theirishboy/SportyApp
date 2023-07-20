@@ -1,0 +1,57 @@
+CREATE TABLE User (
+    id INTEGER PRIMARY KEY NOT NULL,
+    email  TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    firstname TEXT NOT NULL,
+    lastname TEXT NOT NULL,
+    is_active INTEGER NOT NULL,
+    is_admin INTEGER NOT NULL
+);
+
+
+selectAllLUserInfo:
+SELECT * FROM User;
+
+insertUser:
+INSERT INTO User(id, email, password, firstname, lastname, is_active, is_admin)
+VALUES(?, ?, ?, ?, ?, ?, ?);
+
+deleteUser:
+DELETE FROM User;
+
+CREATE TABLE SportSession (
+    id INTEGER PRIMARY KEY NOT NULL,
+    date TEXT NOT NULL,
+    name TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES User(id)
+);
+
+CREATE TABLE SportSessionExercise (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sport_session_id INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    FOREIGN KEY(sport_session_id) REFERENCES SportSession(id),
+    FOREIGN KEY(exercise_id) REFERENCES Exercise(id)
+);
+
+CREATE TABLE MuscularGroup (
+      id INTEGER PRIMARY KEY NOT NULL,
+      name TEXT NOT NULL
+  );
+
+CREATE TABLE ExerciseMuscularGroup (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    exercise_id INTEGER NOT NULL,
+    muscular_group_id INTEGER NOT NULL,
+    FOREIGN KEY(exercise_id) REFERENCES Exercise(id),
+    FOREIGN KEY(muscular_group_id) REFERENCES MuscularGroup(id)
+);
+
+
+CREATE TABLE Exercise (
+    id INTEGER PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT
+);
+
