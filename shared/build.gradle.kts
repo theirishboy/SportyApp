@@ -40,7 +40,7 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.insert-koin:koin-core:${koin}")
                 implementation("io.insert-koin:koin-test:${koin}")
-
+                implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")
             }
         }
         val commonTest by getting {
@@ -69,8 +69,8 @@ kotlin {
 }
 sqldelight {
     databases {
-        create("Database") {
-            packageName.set("com.example")
+        create("SportDatabase") {
+            packageName.set("com.example.yoursportapp")
         }
     }
 }

@@ -1,11 +1,10 @@
 package com.example.yoursportapp
 
+
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
-import com.example.Database
+import org.koin.dsl.module
 
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver {
-        return NativeSqliteDriver(Database.Schema, "yoursportapp.db")
-    }
+actual val driverFactory = module {
+    single<SqlDriver> { NativeSqliteDriver(SportDatabase.Schema, "SportDatabase") }
 }
