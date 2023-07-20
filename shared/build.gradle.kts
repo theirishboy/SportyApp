@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     kotlin("plugin.serialization") version "1.8.22"
+    id("app.cash.sqldelight") version "2.0.0-rc02"
 
 }
 
@@ -26,7 +27,7 @@ kotlin {
             baseName = "shared"
         }
     }
-    val ktorVersion = "2.3.1"
+    val ktorVersion = "2.3.2"
     val koin = "3.2.0"
     sourceSets {
         val commonMain by getting {
@@ -39,7 +40,6 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.insert-koin:koin-core:${koin}")
                 implementation("io.insert-koin:koin-test:${koin}")
-                implementation("io.insert-koin:koin-android:${koin}")
 
             }
         }
@@ -50,16 +50,30 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
+                implementation("app.cash.sqldelight:android-driver:2.0.0-rc02")
+                implementation("io.insert-koin:koin-android:${koin}")
+
+
             }
         }
         val iosMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
+                implementation("app.cash.sqldelight:native-driver:2.0.0-rc02")
+
             }
+        }
+        val iosSimulatorArm64Main by getting
+
+    }
+}
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.example")
         }
     }
 }
-
 android {
     namespace = "com.example.yoursportapp"
     compileSdk = 33

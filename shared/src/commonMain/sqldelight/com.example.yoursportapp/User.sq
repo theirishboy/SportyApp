@@ -8,6 +8,8 @@ CREATE TABLE User (
     is_admin INTEGER NOT NULL
 );
 
+INSERT INTO User(id,email,password,firstname,lastname,is_active,is_admin) VALUES
+(0,"Paul Bismuth@","quatar","jean kevin","leblanc",1,1 );
 
 selectAllLUserInfo:
 SELECT * FROM User;
