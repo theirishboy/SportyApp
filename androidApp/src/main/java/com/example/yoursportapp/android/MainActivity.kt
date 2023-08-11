@@ -4,11 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.*
+import com.example.yoursportapp.android.ui.screen.SignInForm
+import com.example.yoursportapp.android.ui.screen.SignUpScreen
+import com.example.yoursportapp.android.ui.theme.AppTheme
 import com.example.yoursportapp.data.UserDatabaseDAO
 import org.koin.android.ext.android.inject
 
@@ -18,10 +27,11 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
-                Surface(
+            AppTheme {
+                SignInForm()
+               /* Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     var text by remember { mutableStateOf("Loading") }
                     LaunchedEffect(true) {
@@ -35,7 +45,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                     GreetingView(text)
-                }
+                }*/
             }
         }
     }
@@ -49,7 +59,7 @@ fun GreetingView(text: String) {
 @Preview
 @Composable
 fun DefaultPreview() {
-    MyApplicationTheme {
+    AppTheme {
         GreetingView("Hello, Android!")
     }
 }
