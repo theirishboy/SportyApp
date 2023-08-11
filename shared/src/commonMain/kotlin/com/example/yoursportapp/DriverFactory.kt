@@ -1,16 +1,16 @@
 package com.example.yoursportapp
 
 import app.cash.sqldelight.db.SqlDriver
-import com.example.Database
+import com.example.yoursportapp.SportDatabase
 
-expect class DriverFactory {
+/*expect class DriverFactory {
     fun createDriver(): SqlDriver
 }
 
-fun createDatabase(driverFactory: DriverFactory): Database {
+fun createDatabase(driverFactory: DriverFactory): SportDatabase {
     val driver = driverFactory.createDriver()
-    val database = Database(driver)
+    val database = SportDatabase(driver)
 
     // Do more work with the database (see below).
     return database
-}
+}*/
