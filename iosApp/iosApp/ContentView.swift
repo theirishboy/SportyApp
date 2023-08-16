@@ -1,16 +1,24 @@
 import SwiftUI
 import shared
+import UIKit
 
 struct ContentView: View {
-    @ObservedObject private(set) var viewModel: ViewModel
+   // @ObservedObject private(set) var viewModel: ViewModel
 
     var body: some View {
-        Text(viewModel.text)
+     ComposeView().ignoresSafeArea(.all, edges: .bottom)
+     //   Text(ViewModelApiCall.text)
     }
 }
+struct ComposeView: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        Main_iosKt.MainViewController()
+    }
 
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
+}
 extension ContentView {
-    class ViewModel: ObservableObject {
+    class ViewModelApiCall: ObservableObject {
         @Published var text = "Loading..."
         init() {
             Greeting().greeting { greeting, error in
@@ -24,5 +32,5 @@ extension ContentView {
             }
         }
     }
-    
+
 }
