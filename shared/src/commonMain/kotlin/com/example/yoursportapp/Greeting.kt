@@ -35,6 +35,10 @@ class Greeting {
 //                "\nThe last successful launch was ${lastSuccessLaunch.launchDateUTC} 🚀"
 //
 //    }
+    suspend fun greeting(): String {
+        val response = httpClient.get("https://ktor.io/docs/")
+        return response.bodyAsText()
+    }
     @Throws(Exception::class)
     suspend fun greet(): String {
         val response =

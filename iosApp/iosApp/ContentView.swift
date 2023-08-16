@@ -13,7 +13,7 @@ extension ContentView {
     class ViewModel: ObservableObject {
         @Published var text = "Loading..."
         init() {
-            Greeting().greet { greeting, error in
+            Greeting().greeting { greeting, error in
                 DispatchQueue.main.async {
                     if let greeting = greeting {
                         self.text = greeting
