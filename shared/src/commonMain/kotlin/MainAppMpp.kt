@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.yoursportapp.data.UserDatabaseDAO
-import com.example.yoursportapp.ui.SignInForm
-import com.example.yoursportapp.ui.SignInViewModel
+import com.example.yoursportapp.ui.screen.SignInForm
+import com.example.yoursportapp.ui.screen.SignInViewModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import org.jetbrains.compose.resources.ExperimentalResourceApi

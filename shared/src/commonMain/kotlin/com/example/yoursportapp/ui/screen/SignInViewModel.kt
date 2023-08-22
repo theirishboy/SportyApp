@@ -1,13 +1,8 @@
-package com.example.yoursportapp.ui
+package com.example.yoursportapp.ui.screen
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.example.yoursportapp.data.UserDatabaseDAO
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 
 data class SignInUiState(

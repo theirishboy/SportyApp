@@ -18,7 +18,9 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         setContent {
-            MainView()
+            AppTheme {
+                MainView()
+            }
            /* AppTheme {
                 SignInForm()
                /* Surface(
