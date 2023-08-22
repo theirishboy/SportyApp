@@ -10,6 +10,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
 
 class UserDatabaseDAO {
@@ -33,18 +34,24 @@ class UserDatabaseDAO {
     }
     @Throws(Exception::class)
     suspend fun signIn(username : String, password : String): String {
-        val response =
-            httpClient.post(ApiURL + "token"){
-                headers {
-                    append(HttpHeaders.Accept, "application/json")
-                    append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
-                }
-                val requestBody = "grant_type=&username=$username&password=$password&scope=&client_id=&client_secret="
-                setBody(requestBody)
+        var response = ""
+        try {
+            response =
+                httpClient.post(ApiURL + "token"){
+                    headers {
+                        append(HttpHeaders.Accept, "application/json")
+                        append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                    }
+                    val requestBody = "grant_type=&username=$username&password=$password&scope=&client_id=&client_secret="
+                    setBody(requestBody)
 
 
-            }.bodyAsText()
-        token = Json.decodeFromString<UserToken>(response)
+                }.bodyAsText()
+            token = Json.decodeFromString<UserToken>(response)
+        }   catch (e: IOException) {
+            println("Caught IOException: $e")
+            response = "NetworkException"
+        }
         return response
 
     }
