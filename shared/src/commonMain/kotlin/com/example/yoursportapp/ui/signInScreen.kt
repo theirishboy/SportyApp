@@ -1,4 +1,4 @@
-package com.example.yoursportapp.android.ui.screen
+package com.example.yoursportapp.ui
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,11 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -36,22 +40,27 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class SignInScreen {
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun SignInForm() {
+fun SignInForm(viewModel: SignInViewModel,
+              // onValueChange: (SignInUiState) -> Unit = viewModel::updateUiState,
+               coroutineScope: CoroutineScope = rememberCoroutineScope(),
+) {
     var fullname by remember { mutableStateOf("Matias Duarte") }
     var username by remember { mutableStateOf("duarte@gmail.com") }
     var password by remember { mutableStateOf("duartesStrongPassword") }
     var errorMessage by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(true) }
-
+    val _signInUiState by viewModel._signInUiState.collectAsState()
     val focus = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
+   // val keyboardController = LocalSoftwareKeyboardController.current
 
     val onSubmit: () -> Unit = {
         TODO("Handle onSubmit")
@@ -126,7 +135,7 @@ fun SignInForm() {
             Spacer(Modifier.height(24.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = fullname,
+                value = _signInUiState.username,
                 label = { Text("Full name") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
@@ -137,7 +146,7 @@ fun SignInForm() {
                         focus.moveFocus(FocusDirection.Next)
                     }
                 ),
-                onValueChange = { fullname = it },
+                onValueChange = {viewModel.onUsernameChange(newUsername = it)},
                 singleLine = true
             )
             Spacer(Modifier.height(8.dp))
@@ -148,7 +157,7 @@ fun SignInForm() {
                 supportingText = {
                     Text(errorMessage)
                 },
-                value = password,
+                value = _signInUiState.password,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -156,13 +165,13 @@ fun SignInForm() {
                 keyboardActions = KeyboardActions(
                     onNext = {
                         focus.clearFocus()
-                        keyboardController?.hide()
+                      //  keyboardController?.hide()
                         onSubmit()
                     }
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 onValueChange = {
-                    password = it
+                    viewModel.onPasswordChange(newPassword = it)
                 },
                 singleLine = true
             )
@@ -176,7 +185,7 @@ fun SignInForm() {
                     enabled = acceptedTerms && fullname.isNotBlank()
                             && username.isNotBlank()
                             && password.isNotBlank(),
-                    onClick = onSubmit,
+                    onClick = { coroutineScope.launch { viewModel.signIn() } } ,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Sign In")
@@ -184,21 +193,16 @@ fun SignInForm() {
                 Spacer(Modifier.height(8.dp))
                 TextButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = { /*TODO*/ },
+                    onClick = { },
                     colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.onSurface.copy(
                             alpha = 0.66f
                         )
                     )
                 ) {
-                    Text("Don't have an account? Sign up")
+                    Text("Don't have an account? Sign up " + _signInUiState.username )
                 }
             }
         }
     }
-}
-@Preview
-@Composable
-fun SignInScreenPreview(){
-    SignInForm()
 }

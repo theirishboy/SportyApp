@@ -17,8 +17,3 @@ actual val driverFactory: Module = module {
 
 }
 
-actual class DriverFactory {
-    actual fun createDriver(): SqlDriver {
-        TODO("Not yet implemented")
-    }
-}

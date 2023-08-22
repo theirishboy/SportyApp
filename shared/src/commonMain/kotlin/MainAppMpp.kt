@@ -1,19 +1,15 @@
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import com.example.yoursportapp.data.UserDatabaseDAO
+import com.example.yoursportapp.ui.SignInForm
+import com.example.yoursportapp.ui.SignInViewModel
+import dev.icerock.moko.mvvm.compose.getViewModel
+import dev.icerock.moko.mvvm.compose.viewModelFactory
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -21,22 +17,9 @@ fun MainAppMpp() {
     MaterialTheme {
         var greetingText by remember { mutableStateOf("Hello, World!") }
         var showImage by remember { mutableStateOf(false) }
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Button(onClick = {
-                greetingText = "Hello, ${getPlatformName()}"
-                showImage = !showImage
-            }) {
-                Text(greetingText)
-            }
-            AnimatedVisibility(showImage) {
-                Text("enfin ca fonctionne petite pute")
-            //                Image(
-//                    painterResource("compose-multiplatform.xml"),
-//                    null
-//                )
-            }
-        }
+        val signInViewModel = getViewModel(Unit, viewModelFactory { SignInViewModel(UserDatabaseDAO()) })
+
+        SignInForm(signInViewModel)
     }
 }
 
-expect fun getPlatformName(): String

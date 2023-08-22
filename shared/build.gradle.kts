@@ -16,7 +16,7 @@ kotlin {
     android {
         compilations.all {
             kotlinOptions {
-                jvmTarget = "1.8"
+                jvmTarget = "11"
             }
         }
     }
@@ -52,9 +52,11 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${koin}")
                 implementation("io.insert-koin:koin-test:${koin}")
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")
+                api("dev.icerock.moko:mvvm-core:0.16.1") // only ViewModel, EventsDispatcher, Dispatchers.UI
+                api("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material)
+                implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
             }
@@ -68,6 +70,8 @@ kotlin {
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
                 implementation("app.cash.sqldelight:android-driver:2.0.0")
                 implementation("io.insert-koin:koin-android:${koin}")
+                implementation("androidx.compose.material3:material3:1.1.1")
+
 
 
             }
@@ -105,13 +109,12 @@ android {
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
-        targetSdk = (findProperty("android.targetSdk") as String).toInt()
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlin {
-        jvmToolchain(1_8)
+        jvmToolchain(11)
     }
 }

@@ -1,23 +1,30 @@
 plugins {
+    kotlin("multiplatform")
     id("com.android.application")
-    kotlin("android")
+    id("org.jetbrains.compose")
+}
+kotlin {
+    androidTarget()
+    sourceSets {
+        val androidMain by getting {
+            dependencies {
+                implementation(project(":shared"))
+            }
+        }
+    }
 }
 
 android {
     namespace = "com.example.yoursportapp.android"
-    compileSdk = 34
+    compileSdk = (findProperty("android.compileSdk") as String).toInt()
+    sourceSets["main"].manifest.srcFile("src/main/AndroidManifest.xml")
+
     defaultConfig {
         applicationId = "com.example.yoursportapp.android"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = (findProperty("android.targetSdk") as String).toInt()
         versionCode = 1
         versionName = "1.0"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
     }
     packaging {
         resources {
@@ -30,11 +37,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    kotlin {
+        jvmToolchain(11)
     }
 }
 val koin = "3.2.0"
