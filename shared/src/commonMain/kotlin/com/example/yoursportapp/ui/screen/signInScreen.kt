@@ -53,9 +53,6 @@ fun SignInForm(viewModel: SignInViewModel,
               // onValueChange: (SignInUiState) -> Unit = viewModel::updateUiState,
                coroutineScope: CoroutineScope = rememberCoroutineScope(),
 ) {
-    var fullname by remember { mutableStateOf("Matias Duarte") }
-    var username by remember { mutableStateOf("duarte@gmail.com") }
-    var password by remember { mutableStateOf("duartesStrongPassword") }
     var errorMessage by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(true) }
     val _signInUiState by viewModel._signInUiState.collectAsState()
@@ -64,50 +61,6 @@ fun SignInForm(viewModel: SignInViewModel,
 
     val onSubmit: () -> Unit = {
         TODO("Handle onSubmit")
-    }
-
-    @Composable
-    fun TermsAndConditions() {
-        val fullText = "I accept the Terms & Conditions"
-        val clickableText = "Terms & Conditions"
-        val tag = "terms-and-conditions"
-
-        val annotatedString = buildAnnotatedString {
-            append(fullText)
-            val start = fullText.indexOf(clickableText)
-            val end = start + clickableText.length
-
-            addStyle(
-                style = SpanStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
-                ),
-                start = start,
-                end = end
-            )
-
-            addStringAnnotation(
-                tag = tag,
-                annotation = "https://www.composables.com",
-                start = start,
-                end = end
-            )
-        }
-        val uriHandler = LocalUriHandler.current
-        ClickableText(
-            style = MaterialTheme.typography.bodyMedium.copy(
-                color = LocalContentColor.current
-            ),
-            text = annotatedString,
-            onClick = { offset ->
-                annotatedString
-                    .getStringAnnotations(tag, offset, offset)
-                    .firstOrNull()
-                    ?.let { string ->
-                        uriHandler.openUri(string.item)
-                    }
-            }
-        )
     }
 
     Scaffold(
@@ -182,9 +135,8 @@ fun SignInForm(viewModel: SignInViewModel,
             Spacer(Modifier.height(16.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Button(
-                    enabled = acceptedTerms && fullname.isNotBlank()
-                            && username.isNotBlank()
-                            && password.isNotBlank(),
+                    enabled = acceptedTerms && _signInUiState.username.isNotBlank()
+                            && _signInUiState.password.isNotBlank() ,
                     onClick = { coroutineScope.launch { viewModel.signIn() } } ,
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -200,7 +152,7 @@ fun SignInForm(viewModel: SignInViewModel,
                         )
                     )
                 ) {
-                    Text("Don't have an account? Sign up " + _signInUiState.username )
+                    Text("Don't have an account? Sign up ")
                 }
             }
         }

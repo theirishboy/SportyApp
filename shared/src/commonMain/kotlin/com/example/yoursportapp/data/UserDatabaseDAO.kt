@@ -2,6 +2,7 @@ package com.example.yoursportapp.data
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -13,10 +14,12 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
 
-class UserDatabaseDAO {
-    private var token: UserToken = UserToken(null,null)
-    private val ApiURL = "http://10.0.2.2:8000/"
-    private val httpClient = HttpClient {
+object HttpClientProvider {
+    val httpClient = HttpClient {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 10000
+
+        }
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true
@@ -24,7 +27,13 @@ class UserDatabaseDAO {
                 ignoreUnknownKeys = true
             })
         }
+
     }
+}
+class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient)   {
+    private var token: UserToken = UserToken(null,null)
+    private val ApiURL = "http://10.0.2.2:8000"
+
     @Throws(Exception::class)
         suspend fun isServerUp(): String {
         val response =
@@ -37,7 +46,7 @@ class UserDatabaseDAO {
         var response = ""
         try {
             response =
-                httpClient.post(ApiURL + "token"){
+                httpClient.post(ApiURL + ApiRoutes.TOKEN){
                     headers {
                         append(HttpHeaders.Accept, "application/json")
                         append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
@@ -47,11 +56,17 @@ class UserDatabaseDAO {
 
 
                 }.bodyAsText()
-            token = Json.decodeFromString<UserToken>(response)
+            if (response.contains("token"))
+            {
+                token = Json.decodeFromString(response)
+            }
         }   catch (e: IOException) {
             println("Caught IOException: $e")
             response = "NetworkException"
+        }  catch(e : Exception){
+            response = "Can't connect to server, it might be down look at : $e"
         }
+        println(response)
         return response
 
     }
@@ -59,7 +74,7 @@ class UserDatabaseDAO {
     suspend fun getSportSession(): String {
 
         val response =
-            httpClient.get(ApiURL + "sport-sessions/1"){
+            httpClient.get(ApiURL + ApiRoutes.SPORT_SESSION + "/1"){
                 headers {
                     append(HttpHeaders.Accept, "application/json")
                     append(HttpHeaders.Authorization, ("bearer " + token.token))

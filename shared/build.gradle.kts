@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.8.22"
     kotlin("native.cocoapods")
+    kotlin("plugin.serialization") version "1.9.0"
 
     id("com.android.library")
     id("app.cash.sqldelight") version "2.0.0"
@@ -48,12 +48,16 @@ kotlin {
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+                implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:$1.9.0")
+
                 implementation("io.insert-koin:koin-core:${koin}")
                 implementation("io.insert-koin:koin-test:${koin}")
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")
                 api("dev.icerock.moko:mvvm-core:0.16.1") // only ViewModel, EventsDispatcher, Dispatchers.UI
                 api("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
+                api("dev.icerock.moko:mvvm-test:0.16.1") // api mvvm-test
+                api("dev.icerock.moko:test-core:0.6.1")
+
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
@@ -63,7 +67,11 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test")) }
+                implementation(kotlin("test"))
+                implementation("io.ktor:ktor-client-mock:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")  // Kotlinx Serialization JSON support
+
+            }
         }
         val androidMain by getting {
             dependencies {
