@@ -20,7 +20,7 @@ fun initKoin(appModule: Module): KoinApplication {
         modules(
             appModule,
             driverFactory,
-            coreModule
+            coreModule,
         )
     }
 

@@ -13,6 +13,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
+import org.koin.core.module.Module
 
 object HttpClientProvider {
     val httpClient = HttpClient {
@@ -30,14 +31,14 @@ object HttpClientProvider {
 
     }
 }
+expect val ApiUrl:String 
 class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient)   {
     private var token: UserToken = UserToken(null,null)
-    private val ApiURL = "http://10.0.2.2:8000"
 
     @Throws(Exception::class)
         suspend fun isServerUp(): String {
         val response =
-            httpClient.get(ApiURL).body<String>()
+            httpClient.get(ApiUrl).body<String>()
         return response
 
     }
@@ -46,7 +47,7 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         var response = ""
         try {
             response =
-                httpClient.post(ApiURL + ApiRoutes.TOKEN){
+                httpClient.post(ApiUrl + ApiRoutes.TOKEN){
                     headers {
                         append(HttpHeaders.Accept, "application/json")
                         append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
@@ -74,7 +75,7 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
     suspend fun getSportSession(): String {
 
         val response =
-            httpClient.get(ApiURL + ApiRoutes.SPORT_SESSION + "/1"){
+            httpClient.get(ApiUrl + ApiRoutes.SPORT_SESSION + "/1"){
                 headers {
                     append(HttpHeaders.Accept, "application/json")
                     append(HttpHeaders.Authorization, ("bearer " + token.token))
@@ -85,5 +86,9 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         val json = Json { ignoreUnknownKeys = true }
         var sportSession = json.decodeFromString<SportSession>(response)
         return response
+    }
+    suspend fun greeting(): String {
+        val response = httpClient.get("https://ktor.io/docs/")
+        return response.bodyAsText()
     }
 }
