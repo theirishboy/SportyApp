@@ -19,41 +19,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ApiClientTest {
-    @Test
-    fun sampleClientTest() {
-        runBlocking {
-            val mockEngine = MockEngine { request ->
-                respond(
-                    content = ByteReadChannel("""{"ip":"10.0.2.2"}"""),
-                    status = HttpStatusCode.OK,
-                    headers = headersOf(HttpHeaders.ContentType, "application/json")
-                )
-            }
-            val httpClient = HttpClient(mockEngine) {
-                install(HttpTimeout) {
-                    requestTimeoutMillis = 10000
-
-                }
-                install(ContentNegotiation) {
-                    json(Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    })
-                }
-            }
-            val apiClient = UserDatabaseDAO(httpClient)
-
-            assertEquals("""{"ip":"10.0.2.2"}""", apiClient.isServerUp())
-            assertEquals("127.0.0.1", apiClient.signIn("toto","tata"))
-        }
-    }
-}
-
-
 private val responseHeaders = headersOf(HttpHeaders.ContentType,"application/json")
-class ApiClientTest2
+class ApiClientTest
 {
 
     private lateinit var httpClient: HttpClient
@@ -100,14 +67,14 @@ class ApiClientTest2
 
 
     @Test
-    fun `signIn with valid credentials`() = runBlocking {
+    fun signInWithValidCredentials() = runBlocking {
         val yourClass = UserDatabaseDAO(httpClient)
         val result = yourClass.signIn("test", "test")
         assertEquals("""{"access_token":"testToken","token_type":"bearer"}""", result)
     }
 
     @Test
-    fun `signIn with invalid credentials`() = runBlocking {
+    fun signInWithInvalidCredentials() = runBlocking {
         val yourClass = UserDatabaseDAO(httpClient)
         val result = yourClass.signIn("invalid", "creds")
         println(result)
