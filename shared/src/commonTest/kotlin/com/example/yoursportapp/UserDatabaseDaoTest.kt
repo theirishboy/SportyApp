@@ -68,15 +68,15 @@ class ApiClientTest
 
     @Test
     fun signInWithValidCredentials() = runBlocking {
-        val yourClass = UserDatabaseDAO(httpClient)
-        val result = yourClass.signIn("test", "test")
+        val userDatabaseDAO = UserDatabaseDAO(httpClient)
+        val result = userDatabaseDAO.signIn("test", "test")
         assertEquals("""{"access_token":"testToken","token_type":"bearer"}""", result)
     }
 
     @Test
     fun signInWithInvalidCredentials() = runBlocking {
-        val yourClass = UserDatabaseDAO(httpClient)
-        val result = yourClass.signIn("invalid", "creds")
+        val userDatabaseDAO = UserDatabaseDAO(httpClient)
+        val result = userDatabaseDAO.signIn("invalid", "creds")
         println(result)
         assertEquals("""{"detail":"Incorrect username or password"}""", result)
     }
