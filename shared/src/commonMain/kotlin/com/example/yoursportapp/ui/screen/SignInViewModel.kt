@@ -13,7 +13,6 @@ class SignInViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
     var _signInUiState = MutableStateFlow(SignInUiState())
         private set
     suspend fun signIn(){
-       // userDao.greeting()
          userDao.signIn(_signInUiState.value.username,_signInUiState.value.password)
     }
     fun onUsernameChange(newUsername : String){

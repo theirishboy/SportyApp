@@ -40,6 +40,11 @@ kotlin {
 
     val ktorVersion = "2.3.3"
     val koin = "3.2.0"
+    val voyagerVersion = "1.0.0-rc05"
+
+    // Multiplatform
+
+    // Navigator
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -57,6 +62,8 @@ kotlin {
                 api("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
                 api("dev.icerock.moko:mvvm-test:0.16.1") // api mvvm-test
                 api("dev.icerock.moko:test-core:0.6.1")
+
+                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion") //Mavigation
 
                 implementation(compose.runtime)
                 implementation(compose.foundation)
