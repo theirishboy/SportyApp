@@ -19,9 +19,14 @@ data class User(
     val is_active: String,
     @SerialName("is_admin")
     val is_admin: String,
-    val sport_sessions: MutableList<SportSession>
+    val sport_sessions: MutableList<SportSession>?
 
 
-)
+) {
+    constructor(email: String, password: String, firstname: String, lastname: String)
+            : this(0,email,password,firstname,lastname,"true","false",null) {
+
+    }
+}
 
 

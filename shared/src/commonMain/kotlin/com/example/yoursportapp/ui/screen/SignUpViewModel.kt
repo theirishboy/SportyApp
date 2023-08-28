@@ -5,16 +5,17 @@ import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
-data class SignUpUiState( val username: String = "",
-                           val password: String= "",
+data class SignUpUiState( val firstname: String = "",
+                           val lastname: String= "",
                            val email: String= "",
+                           val password : String = "",
                            val termsStatus : Boolean = false)
 
 class SignUpViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
     var _signUpUiState = MutableStateFlow(SignUpUiState())
         private set
-    fun onSignUp(){
-        //userDao.signUp()
+    suspend fun onSignUp(){
+        userDao.signUp(_signUpUiState.value.firstname,_signUpUiState.value.lastname,_signUpUiState.value.email,_signUpUiState.value.password)
     }
     fun isEmailValid(): Boolean {
         if (_signUpUiState.value.email.matches(emailAddressRegex)){
@@ -22,8 +23,8 @@ class SignUpViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
         }
         return false
     }
-    fun onUsernameChange(newUsername : String){
-        _signUpUiState.update { it.copy(username = newUsername) }
+    fun onFirstNameChange(newFirstName : String){
+        _signUpUiState.update { it.copy(firstname = newFirstName) }
 
     }
     fun onPasswordChange(newPassword : String){

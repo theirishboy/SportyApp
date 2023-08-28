@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.sourceInformationMarkerStart
 import androidx.compose.ui.Alignment
@@ -51,6 +52,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.UserDatabaseDAO
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
 data class SignUpScreen(val postId: Long) : Screen {
@@ -64,18 +67,16 @@ data class SignUpScreen(val postId: Long) : Screen {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
-    var fullname by remember { mutableStateOf("Matias Duarte") }
-    var username by remember { mutableStateOf("duarte@gmail.com") }
-    var password by remember { mutableStateOf("duartesStrongPassword") }
     var errorMessage by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(true) }
 
     val focus = LocalFocusManager.current
 
     val signUpUiState by viewModel._signUpUiState.collectAsState()
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
 
     @Composable
     fun TermsAndConditions() {
@@ -142,8 +143,8 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             Spacer(Modifier.height(24.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = signUpUiState.username,
-                label = { Text("Username") },
+                value = signUpUiState.firstname,
+                label = { Text("first name") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
@@ -153,7 +154,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
                         focus.moveFocus(FocusDirection.Next)
                     }
                 ),
-                onValueChange = { viewModel.onUsernameChange(newUsername = it)  },
+                onValueChange = { viewModel.onFirstNameChange(newFirstName = it)  },
                 singleLine = true
             )
             Spacer(Modifier.height(8.dp))
@@ -224,11 +225,11 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             Spacer(Modifier.height(16.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Button(
-                    enabled =  viewModel.isEmailValid() && acceptedTerms && signUpUiState.username.isNotBlank()
+                    enabled =  viewModel.isEmailValid() && acceptedTerms && signUpUiState.firstname.isNotBlank()
                             && signUpUiState.password.isNotBlank()
                             && signUpUiState.email.isNotBlank()
                            ,
-                    onClick = {},
+                    onClick = { coroutineScope.launch { viewModel.onSignUp()}},
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Sign Up")

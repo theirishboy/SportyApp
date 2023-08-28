@@ -6,11 +6,15 @@ plugins {
     id("com.android.library")
     id("app.cash.sqldelight") version "2.0.0"
     id("org.jetbrains.compose")
+    id("dev.icerock.mobile.multiplatform-resources")
 
 }
-
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    val mokoResourceVersion = extra["moko.version.resources"] as String
+    val ktorVersion = "2.3.3"
+    val koin = "3.2.0"
+    val voyagerVersion = "1.0.0-rc05"
     targetHierarchy.default()
 
     android {
@@ -34,17 +38,15 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
+            export("dev.icerock.moko:resources:$mokoResourceVersion")
+            export("dev.icerock.moko:graphics:0.9.0 ")
         }
         extraSpecAttributes["resources"] = "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
     }
 
-    val ktorVersion = "2.3.3"
-    val koin = "3.2.0"
-    val voyagerVersion = "1.0.0-rc05"
 
     // Multiplatform
 
-    // Navigator
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -62,6 +64,8 @@ kotlin {
                 api("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
                 api("dev.icerock.moko:mvvm-test:0.16.1") // api mvvm-test
                 api("dev.icerock.moko:test-core:0.6.1")
+                api("dev.icerock.moko:resources:$mokoResourceVersion")
+                api("dev.icerock.moko:resources-compose:$mokoResourceVersion")
 
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion") //Mavigation
 
@@ -70,6 +74,7 @@ kotlin {
                 implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
             }
         }
         val commonTest by getting {
@@ -81,6 +86,7 @@ kotlin {
             }
         }
         val androidMain by getting {
+            dependsOn(commonMain)
             dependencies {
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
                 implementation("app.cash.sqldelight:android-driver:2.0.0")
@@ -132,4 +138,9 @@ android {
     kotlin {
         jvmToolchain(11)
     }
+}
+multiplatformResources{
+    multiplatformResourcesPackage = "com.example.yoursportapp"
+    multiplatformResourcesClassName = "SharedRes" // optional, default MR
+
 }

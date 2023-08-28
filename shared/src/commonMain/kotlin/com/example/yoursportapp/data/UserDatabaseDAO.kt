@@ -71,17 +71,16 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         return response
 
     }
-    suspend fun signUp(username : String, password : String, mail : String): String {
+    suspend fun signUp(firstname : String, lastname: String, email : String, password: String): String {
         var response = ""
         try {
             response =
                 httpClient.post(ApiUrl + ApiRoutes.CREATE_USER){
                     headers {
                         append(HttpHeaders.Accept, "application/json")
-                        append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                        append(HttpHeaders.ContentType, "application/json")
                     }
-                    val requestBody = "grant_type=&username=$username&password=$password&scope=&client_id=&client_secret="
-                    setBody(requestBody)
+                    setBody(User(email = email, password = password, firstname = firstname, lastname = lastname))
 
 
                 }.bodyAsText()

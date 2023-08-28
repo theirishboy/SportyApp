@@ -9,6 +9,12 @@ plugins {
 
 
 }
+buildscript{
+    val mokoResourceVersion = extra["moko.version.resources"] as String
+    dependencies{
+        classpath("dev.icerock.moko:resources-generator:$mokoResourceVersion")
+    }
+}
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
