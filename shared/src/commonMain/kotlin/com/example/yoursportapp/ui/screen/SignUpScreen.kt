@@ -24,10 +24,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.sourceInformationMarkerStart
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -55,15 +57,16 @@ data class SignUpScreen(val postId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val viewModel = getViewModel(Unit, viewModelFactory { SignUpViewModel(UserDatabaseDAO()) })
 
-        SignUpForm(navigator)
+        SignUpForm(navigator, viewModel)
     }
 }
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpForm(navigator: Navigator) {
+fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
     var fullname by remember { mutableStateOf("Matias Duarte") }
     var username by remember { mutableStateOf("duarte@gmail.com") }
     var password by remember { mutableStateOf("duartesStrongPassword") }
@@ -72,9 +75,7 @@ fun SignUpForm(navigator: Navigator) {
 
     val focus = LocalFocusManager.current
 
-    val onSubmit: () -> Unit = {
-        TODO("Handle onSubmit")
-    }
+    val signUpUiState by viewModel._signUpUiState.collectAsState()
 
     @Composable
     fun TermsAndConditions() {
@@ -98,7 +99,7 @@ fun SignUpForm(navigator: Navigator) {
 
             addStringAnnotation(
                 tag = tag,
-                annotation = "",
+                annotation = "https://www.google.com",
                 start = start,
                 end = end
             )
@@ -141,8 +142,8 @@ fun SignUpForm(navigator: Navigator) {
             Spacer(Modifier.height(24.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = fullname,
-                label = { Text("Full name") },
+                value = signUpUiState.username,
+                label = { Text("Username") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
@@ -152,13 +153,13 @@ fun SignUpForm(navigator: Navigator) {
                         focus.moveFocus(FocusDirection.Next)
                     }
                 ),
-                onValueChange = { fullname = it },
+                onValueChange = { viewModel.onUsernameChange(newUsername = it)  },
                 singleLine = true
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = username,
+                value = signUpUiState.email,
                 label = { Text("E-mail") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
@@ -169,7 +170,7 @@ fun SignUpForm(navigator: Navigator) {
                         focus.moveFocus(FocusDirection.Next)
                     }
                 ),
-                onValueChange = { username = it },
+                onValueChange = { viewModel.onEmailChange(newEmail = it)},
                 singleLine = true
             )
             Spacer(Modifier.height(8.dp))
@@ -180,7 +181,7 @@ fun SignUpForm(navigator: Navigator) {
                 supportingText = {
                     Text(errorMessage)
                 },
-                value = password,
+                value = signUpUiState.password,
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -188,13 +189,12 @@ fun SignUpForm(navigator: Navigator) {
                 keyboardActions = KeyboardActions(
                     onNext = {
                         focus.clearFocus()
-                        onSubmit()
                     }
                 ),
                 visualTransformation = PasswordVisualTransformation(),
                 onValueChange = {
-                    password = it
-                },
+                    viewModel.onPasswordChange(newPassword = it)
+                                },
                 singleLine = true
             )
 
@@ -224,10 +224,11 @@ fun SignUpForm(navigator: Navigator) {
             Spacer(Modifier.height(16.dp))
             Column(Modifier.padding(horizontal = 16.dp)) {
                 Button(
-                    enabled = acceptedTerms && fullname.isNotBlank()
-                            && username.isNotBlank()
-                            && password.isNotBlank(),
-                    onClick = onSubmit,
+                    enabled =  viewModel.isEmailValid() && acceptedTerms && signUpUiState.username.isNotBlank()
+                            && signUpUiState.password.isNotBlank()
+                            && signUpUiState.email.isNotBlank()
+                           ,
+                    onClick = {},
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Sign Up")

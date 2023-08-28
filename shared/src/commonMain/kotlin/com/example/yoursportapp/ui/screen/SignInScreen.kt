@@ -7,13 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,26 +25,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.UserDatabaseDAO
-import com.example.yoursportapp.ui.screen.SignInViewModel
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -73,13 +64,9 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
 
         var errorMessage by remember { mutableStateOf("") }
         var acceptedTerms by remember { mutableStateOf(true) }
-        val _signInUiState by viewModel._signInUiState.collectAsState()
+        val signInUiState by viewModel._signInUiState.collectAsState()
         val focus = LocalFocusManager.current
         // val keyboardController = LocalSoftwareKeyboardController.current
-
-        val onSubmit: () -> Unit = {
-            TODO("Handle onSubmit")
-        }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -106,8 +93,8 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 Spacer(Modifier.height(24.dp))
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = _signInUiState.username,
-                    label = { Text("Full name") },
+                    value = signInUiState.username,
+                    label = { Text("Username") },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -128,7 +115,7 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                     supportingText = {
                         Text(errorMessage)
                     },
-                    value = _signInUiState.password,
+                    value = signInUiState.password,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -137,7 +124,6 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                         onNext = {
                             focus.clearFocus()
                             //  keyboardController?.hide()
-                            onSubmit()
                         }
                     ),
                     visualTransformation = PasswordVisualTransformation(),
@@ -153,8 +139,8 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 Spacer(Modifier.height(16.dp))
                 Column(Modifier.padding(horizontal = 16.dp)) {
                     Button(
-                        enabled = acceptedTerms && _signInUiState.username.isNotBlank()
-                                && _signInUiState.password.isNotBlank(),
+                        enabled = acceptedTerms && signInUiState.username.isNotBlank()
+                                && signInUiState.password.isNotBlank(),
                         onClick = { coroutineScope.launch { viewModel.signIn() }},
                         modifier = Modifier.fillMaxWidth()
                     ) {

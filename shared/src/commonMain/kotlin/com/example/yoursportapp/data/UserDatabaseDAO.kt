@@ -71,6 +71,34 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         return response
 
     }
+    suspend fun signUp(username : String, password : String, mail : String): String {
+        var response = ""
+        try {
+            response =
+                httpClient.post(ApiUrl + ApiRoutes.CREATE_USER){
+                    headers {
+                        append(HttpHeaders.Accept, "application/json")
+                        append(HttpHeaders.ContentType, "application/x-www-form-urlencoded")
+                    }
+                    val requestBody = "grant_type=&username=$username&password=$password&scope=&client_id=&client_secret="
+                    setBody(requestBody)
+
+
+                }.bodyAsText()
+            if (response.contains("token"))
+            {
+                token = Json.decodeFromString(response)
+            }
+        }   catch (e: IOException) {
+            println("Caught IOException: $e")
+            response = "NetworkException"
+        }  catch(e : Exception){
+            response = "Can't connect to server, it might be down look at : $e"
+        }
+        println(response)
+        return response
+
+    }
     @Throws(Exception::class)
     suspend fun getSportSession(): String {
 
