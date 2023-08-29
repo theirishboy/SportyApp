@@ -160,6 +160,23 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                value = signUpUiState.lastname,
+                label = { Text("last name") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focus.moveFocus(FocusDirection.Next)
+                    }
+                ),
+                onValueChange = { viewModel.onLastNameChange(newLastName = it)  },
+                singleLine = true
+            )
+            Spacer(Modifier.height(8.dp))
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 value = signUpUiState.email,
                 label = { Text("E-mail") },
                 keyboardOptions = KeyboardOptions(

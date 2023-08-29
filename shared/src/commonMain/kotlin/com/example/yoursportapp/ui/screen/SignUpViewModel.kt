@@ -27,6 +27,10 @@ class SignUpViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
         _signUpUiState.update { it.copy(firstname = newFirstName) }
 
     }
+    fun onLastNameChange(newLastName : String){
+        _signUpUiState.update { it.copy(lastname = newLastName) }
+
+    }
     fun onPasswordChange(newPassword : String){
         _signUpUiState.update { it.copy(password = newPassword) }    }
 
