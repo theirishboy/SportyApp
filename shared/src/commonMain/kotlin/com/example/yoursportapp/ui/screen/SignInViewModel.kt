@@ -16,8 +16,8 @@ class SignInViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
     suspend fun signIn(){
          userDao.signIn(_signInUiState.value.email,_signInUiState.value.password)
     }
-    fun onUsernameChange(newMail : String){
-        _signInUiState.update { it.copy(email = newMail) }
+    fun onEmailChange(newEmail : String){
+        _signInUiState.update { it.copy(email = newEmail) }
 
     }
     fun onPasswordChange(newPassword : String){

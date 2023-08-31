@@ -1,7 +1,6 @@
 package com.example.yoursportapp.ui.screen
 
 import YourSportApp.shared.SharedRes
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,11 +25,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -55,20 +54,16 @@ data class SignInScreen(val postId: Long) : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
               // onValueChange: (SignInUiState) -> Unit = viewModel::updateUiState,
 ){
 
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
-        val navigator = LocalNavigator.currentOrThrow
-
         var errorMessage by remember { mutableStateOf("") }
         var acceptedTerms by remember { mutableStateOf(true) }
         val signInUiState by viewModel._signInUiState.collectAsState()
         val focus = LocalFocusManager.current
-        // val keyboardController = LocalSoftwareKeyboardController.current
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -82,85 +77,120 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                     .padding(top = 32.dp)
             ) {
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(SharedRes.strings.sign_In),
-                    style = MaterialTheme.typography.headlineLarge,
-                    textAlign = TextAlign.Center,
-                )
-
-
+                SignInText()
                 Spacer(Modifier.height(12.dp))
-
                 Spacer(Modifier.height(24.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = signInUiState.email,
-                    label = { Text( stringResource(SharedRes.strings.e_mail))},
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focus.moveFocus(FocusDirection.Next)
-                        }
-                    ),
-                    onValueChange = { viewModel.onUsernameChange(newMail = it) },
-                    singleLine = true
-                )
+                UserEmailTextField(signInUiState, focus, viewModel)
                 Spacer(Modifier.height(8.dp))
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text( stringResource(SharedRes.strings.password)) },
-                    isError = errorMessage.isNotBlank(),
-                    supportingText = {
-                        Text(errorMessage)
-                    },
-                    value = signInUiState.password,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focus.clearFocus()
-                            //  keyboardController?.hide()
-                        }
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    onValueChange = {
-                        viewModel.onPasswordChange(newPassword = it)
-                    },
-                    singleLine = true
-                )
-
+                UserPasswordField(errorMessage, signInUiState, focus, viewModel)
                 Spacer(Modifier.height(16.dp))
-                val interactionSource = remember { MutableInteractionSource() }
-
-                Spacer(Modifier.height(16.dp))
-                Column(Modifier.padding(horizontal = 16.dp)) {
-                    Button(
-                        enabled = acceptedTerms && signInUiState.email.isNotBlank()
-                                && signInUiState.password.isNotBlank() && viewModel.isEmailValid(),
-                        onClick = { coroutineScope.launch { viewModel.signIn() }},
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(SharedRes.strings.sign_In))
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    TextButton(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        onClick = { navigator.push(SignUpScreen(0)) },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.onSurface.copy(
-                                alpha = 0.66f
-                            )
-                        )
-                    ) {
-                        Text(stringResource(SharedRes.strings.no_account))
-                    }
-                }
+                SignInButton(acceptedTerms, signInUiState, viewModel, coroutineScope, navigator)
             }
         }
 }
+
+@Composable
+fun SignInText() {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = stringResource(SharedRes.strings.sign_In),
+        style = MaterialTheme.typography.headlineLarge,
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+fun UserEmailTextField(
+    signInUiState: SignInUiState,
+    focus: FocusManager,
+    viewModel: SignInViewModel
+) {
+    StandardTextField(
+        errorMessage = "",
+        content = signInUiState.email,
+        focus,
+        label = stringResource(SharedRes.strings.e_mail),
+        onValueChange =  {viewModel.onEmailChange(newEmail = it)}
+    )
+
+}
+
+@Composable
+fun UserPasswordField(
+    errorMessage: String,
+    signInUiState: SignInUiState,
+    focus: FocusManager,
+    viewModel: SignInViewModel
+) {
+    StandardTextField(errorMessage,
+        content = signInUiState.password,
+        focus,
+        label = stringResource(SharedRes.strings.password),
+        onValueChange = {viewModel.onPasswordChange(newPassword = it)},
+        visualTransformation = PasswordVisualTransformation()
+    )
+}
+@Composable
+fun SignInButton(
+    acceptedTerms: Boolean,
+    signInUiState: SignInUiState,
+    viewModel: SignInViewModel,
+    coroutineScope: CoroutineScope,
+    navigator: Navigator
+) {
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        Button(
+            enabled = acceptedTerms && signInUiState.email.isNotBlank()
+                    && signInUiState.password.isNotBlank() && viewModel.isEmailValid(),
+            onClick = { coroutineScope.launch { viewModel.signIn() } },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(stringResource(SharedRes.strings.sign_In))
+        }
+        Spacer(Modifier.height(8.dp))
+        TextButton(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            onClick = { navigator.push(SignUpScreen(0)) },
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurface.copy(
+                    alpha = 0.66f
+                )
+            )
+        ) {
+            Text(stringResource(SharedRes.strings.no_account))
+        }
+    }
+}
+
+@Composable
+fun StandardTextField(
+    errorMessage: String,
+    content: String,
+    focus: FocusManager,
+    label: String,
+    onValueChange:(String) -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        label = { Text(label) },
+        isError = errorMessage.isNotBlank(),
+        supportingText = {
+            Text(errorMessage)
+        },
+        value = content,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focus.clearFocus()
+            }
+        ),
+        visualTransformation = visualTransformation,
+        onValueChange = onValueChange,
+        singleLine = true
+    )
+}
+

@@ -35,6 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.icerock.moko.resources.compose.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.yoursportapp.data.Exercise
+import com.example.yoursportapp.data.SportSession
+import kotlinx.datetime.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +75,7 @@ fun HomeScreen(){
 }
 @Composable
 fun SportSessionsList(innerPadding: PaddingValues) {
+    val ExerciceList: MutableList<Exercise> = arrayListOf()
     LazyColumn( modifier = Modifier.fillMaxSize(),
         contentPadding = innerPadding,
         verticalArrangement = Arrangement.Center,
@@ -80,14 +84,15 @@ fun SportSessionsList(innerPadding: PaddingValues) {
         ) {
         items(count = 10 ){
             Spacer(modifier = Modifier.height(8.dp))
-            SportSessionShortcut()
+            SportSessionShortcut(sportSession = SportSession(1, LocalDate(2023,12,31),"mondaySession",1,
+                ExerciceList))
 
         }
     }
 
 }
 @Composable
-fun SportSessionShortcut() {
+fun SportSessionShortcut(sportSession: SportSession) {
     Box(
         modifier = Modifier.height(110.dp).fillMaxSize(0.95f),
         contentAlignment = Alignment.Center
@@ -101,7 +106,7 @@ fun SportSessionShortcut() {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(0.7f)) {
                     Row {
                         Text(
-                            text = "Nom",
+                            text = sportSession.name,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold ,
                             overflow = TextOverflow.Ellipsis,
@@ -111,7 +116,7 @@ fun SportSessionShortcut() {
                     Row {
                         Image(painterResource(SharedRes.images.calendar_today_symbol), modifier = Modifier.size(16.dp), contentDescription = "Date")
                         Text(
-                            text = "Date rewrerewrw erew rwwe hguyguyguguyguygujyguj ",
+                            text = sportSession.date.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
@@ -123,7 +128,7 @@ fun SportSessionShortcut() {
                             contentDescription = "Session content"
                         )
                         Text(
-                            text = "nb exo",
+                            text = sportSession.exercises.size.toString(),
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1

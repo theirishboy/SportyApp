@@ -11,7 +11,7 @@
     <string name="sign_up">S\'inscrire</string>
     <string name="sign_In">Se connecter</string>
     <string name="already_account"> Déjà un compte ? Se connecter !</string>
-    <string name="no_account">Vous n\'avez pas de compte ? s\'inscrire ! </string>
+    <string name="no_account">Vous n\'avez pas de compte ? S\'inscrire ! </string>
     <string name ="terms_conditions">J\'accepte les Termes &amp; Conditions</string>
     <string name="terms_conditions_clickable"> Termes &amp; Conditions</string>
 
