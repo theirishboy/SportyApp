@@ -68,12 +68,15 @@ kotlin {
                 api("dev.icerock.moko:resources-compose:$mokoResourceVersion")
 
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion") //Mavigation
+                implementation("cafe.adriel.voyager:voyager-bottom-sheet-navigator:$voyagerVersion")
 
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
+                implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
 
             }
         }
@@ -139,8 +142,10 @@ android {
         jvmToolchain(11)
     }
 }
+
 multiplatformResources{
-    multiplatformResourcesPackage = "com.example.yoursportapp"
     multiplatformResourcesClassName = "SharedRes" // optional, default MR
+    disableStaticFrameworkWarning = true
+
 
 }

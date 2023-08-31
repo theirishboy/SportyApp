@@ -1,5 +1,6 @@
 package com.example.yoursportapp.ui.screen
 
+import YourSportApp.shared.SharedRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.UserDatabaseDAO
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -82,7 +84,7 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
 
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Log in",
+                    text = stringResource(SharedRes.strings.sign_In),
                     style = MaterialTheme.typography.headlineLarge,
                     textAlign = TextAlign.Center,
                 )
@@ -93,8 +95,8 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 Spacer(Modifier.height(24.dp))
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    value = signInUiState.username,
-                    label = { Text("Username") },
+                    value = signInUiState.email,
+                    label = { Text( stringResource(SharedRes.strings.e_mail))},
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -104,13 +106,13 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                             focus.moveFocus(FocusDirection.Next)
                         }
                     ),
-                    onValueChange = { viewModel.onUsernameChange(newUsername = it) },
+                    onValueChange = { viewModel.onUsernameChange(newMail = it) },
                     singleLine = true
                 )
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Password") },
+                    label = { Text( stringResource(SharedRes.strings.password)) },
                     isError = errorMessage.isNotBlank(),
                     supportingText = {
                         Text(errorMessage)
@@ -139,12 +141,12 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 Spacer(Modifier.height(16.dp))
                 Column(Modifier.padding(horizontal = 16.dp)) {
                     Button(
-                        enabled = acceptedTerms && signInUiState.username.isNotBlank()
-                                && signInUiState.password.isNotBlank(),
+                        enabled = acceptedTerms && signInUiState.email.isNotBlank()
+                                && signInUiState.password.isNotBlank() && viewModel.isEmailValid(),
                         onClick = { coroutineScope.launch { viewModel.signIn() }},
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Sign In")
+                        Text(stringResource(SharedRes.strings.sign_In))
                     }
                     Spacer(Modifier.height(8.dp))
                     TextButton(
@@ -156,7 +158,7 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                             )
                         )
                     ) {
-                        Text("Don't have an account? Sign up ")
+                        Text(stringResource(SharedRes.strings.no_account))
                     }
                 }
             }

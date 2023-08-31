@@ -21,39 +21,6 @@ class MainActivity : ComponentActivity() {
             AppTheme {
                 MainView()
             }
-           /* AppTheme {
-                SignInForm()
-               /* Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    var text by remember { mutableStateOf("Loading") }
-                    LaunchedEffect(true) {
-                        text = try {
-                            userDao.isServerUp()
-                            userDao.signIn("toto", "string")
-                            userDao.getSportSession()
-
-                        } catch (e: Exception) {
-                            e.localizedMessage ?: "error"
-                        }
-                    }
-                    GreetingView(text)
-                }*/
-            }*/
         }
-    }
-}
-
-@Composable
-fun GreetingView(text: String) {
-    Text(text = text)
-}
-
-@Preview
-@Composable
-fun DefaultPreview() {
-    AppTheme {
-        GreetingView("Hello, Android!")
     }
 }

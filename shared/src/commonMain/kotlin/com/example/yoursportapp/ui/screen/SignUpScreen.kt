@@ -1,5 +1,6 @@
 package com.example.yoursportapp.ui.screen
 
+import YourSportApp.shared.SharedRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -30,9 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.sourceInformationMarkerStart
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -52,9 +51,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.UserDatabaseDAO
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import dev.icerock.moko.resources.compose.stringResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
 
 data class SignUpScreen(val postId: Long) : Screen {
     @Composable
@@ -66,13 +65,10 @@ data class SignUpScreen(val postId: Long) : Screen {
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
     var errorMessage by remember { mutableStateOf("") }
     var acceptedTerms by remember { mutableStateOf(true) }
-
     val focus = LocalFocusManager.current
 
     val signUpUiState by viewModel._signUpUiState.collectAsState()
@@ -80,8 +76,8 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
 
     @Composable
     fun TermsAndConditions() {
-        val fullText = "I accept the Terms & Conditions"
-        val clickableText = "Terms & Conditions"
+        val fullText = stringResource(SharedRes.strings.terms_conditions)
+        val clickableText = stringResource(SharedRes.strings.terms_conditions_clickable)
         val tag = "terms-and-conditions"
 
         val annotatedString = buildAnnotatedString {
@@ -135,7 +131,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "Create Free Account",
+                text = stringResource(SharedRes.strings.create_account),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center
             )
@@ -144,7 +140,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = signUpUiState.firstname,
-                label = { Text("first name") },
+                label = { Text( stringResource(SharedRes.strings.first_name) )},
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
@@ -161,7 +157,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = signUpUiState.lastname,
-                label = { Text("last name") },
+                label = { Text( stringResource(SharedRes.strings.last_name)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Next
@@ -178,7 +174,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = signUpUiState.email,
-                label = { Text("E-mail") },
+                label = { Text( stringResource(SharedRes.strings.e_mail))},
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email,
                     imeAction = ImeAction.Next
@@ -194,7 +190,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Password") },
+                label = { Text( stringResource(SharedRes.strings.password) ) },
                 isError = errorMessage.isNotBlank(),
                 supportingText = {
                     Text(errorMessage)
@@ -249,7 +245,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
                     onClick = { coroutineScope.launch { viewModel.onSignUp()}},
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Sign Up")
+                    Text(stringResource(SharedRes.strings.sign_up) )
                 }
 
                 Spacer(Modifier.height(8.dp))
@@ -262,7 +258,7 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
                         )
                     )
                 ) {
-                    Text("Already have an account? Sign in")
+                    Text(stringResource(SharedRes.strings.already_account))
                 }
             }
         }

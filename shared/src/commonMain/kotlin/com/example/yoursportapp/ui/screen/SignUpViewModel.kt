@@ -1,6 +1,7 @@
 package com.example.yoursportapp.ui.screen
 
 import com.example.yoursportapp.data.UserDatabaseDAO
+import com.example.yoursportapp.ressources.RegexRules
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,7 +19,7 @@ class SignUpViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
         userDao.signUp(_signUpUiState.value.firstname,_signUpUiState.value.lastname,_signUpUiState.value.email,_signUpUiState.value.password)
     }
     fun isEmailValid(): Boolean {
-        if (_signUpUiState.value.email.matches(emailAddressRegex)){
+        if (_signUpUiState.value.email.matches(RegexRules.emailAddressRegex)){
             return true
         }
         return false
@@ -37,12 +38,3 @@ class SignUpViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
     fun onEmailChange(newEmail : String){
         _signUpUiState.update { it.copy(email = newEmail) }    }
 }
-private val emailAddressRegex = Regex(
-    "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-            "\\@" +
-            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-            "(" +
-            "\\." +
-            "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-            ")+"
-)

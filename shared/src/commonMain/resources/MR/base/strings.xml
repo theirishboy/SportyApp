@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
     <string name="hello_world">Hello world</string>
+
+    <string name="create_account">Create free account</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="e_mail">E-Mail</string>
+    <string name="password">Password</string>
+
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_In">Sign In</string>
+    <string name="already_account"> Already have an account? Sign in</string>
+    <string name="no_account">Don\'t have an account? Sign up </string>
+    <string name ="terms_conditions">I accept the Terms &amp; Conditions</string>
+    <string name="terms_conditions_clickable"> Terms &amp; Conditions</string>
+
     <string name="hello_x">Hello %s</string>
 </resources>
 

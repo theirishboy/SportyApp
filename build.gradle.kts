@@ -10,6 +10,9 @@ plugins {
 
 }
 buildscript{
+    repositories {
+        gradlePluginPortal()
+    }
     val mokoResourceVersion = extra["moko.version.resources"] as String
     dependencies{
         classpath("dev.icerock.moko:resources-generator:$mokoResourceVersion")

@@ -57,6 +57,6 @@ dependencies {
     implementation("io.insert-koin:koin-core:${koin}")
     implementation("io.insert-koin:koin-test:${koin}")
     implementation("io.insert-koin:koin-android:${koin}")
-    implementation ("androidx.compose.material3:material3:1.2.0-alpha05")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha06")
 
 }
