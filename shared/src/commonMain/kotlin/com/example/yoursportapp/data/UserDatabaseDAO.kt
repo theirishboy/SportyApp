@@ -31,6 +31,7 @@ object HttpClientProvider {
 
     }
 }
+
 expect val ApiUrl:String 
 class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient)   {
     private var token: UserToken = UserToken(null,null)
@@ -43,7 +44,7 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
     }
     @Throws(Exception::class)
-    suspend fun signIn(username : String, password : String): String {
+    suspend fun signIn(username : String, password : String) : SignInResult{
         var response = ""
         try {
             response =
@@ -57,19 +58,17 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
 
                 }.bodyAsText()
-            if (response.contains("token"))
-            {
-                token = Json.decodeFromString(response)
+            return if (response.contains("token")) {
+                SignInResult.Success(response)
+            } else {
+                SignInResult.Error("User not found")
             }
         }   catch (e: IOException) {
             println("Caught IOException: $e")
-            response = "NetworkException"
+            return SignInResult.Error("Internet Error")
         }  catch(e : Exception){
-            response = "Can't connect to server, it might be down look at : $e"
+            return SignInResult.Error("Can't connect to server, it might be down look at : $e")
         }
-        println(response)
-        return response
-
     }
     suspend fun signUp(firstname : String, lastname: String, email : String, password: String): String {
         var response = ""
@@ -114,8 +113,9 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         var sportSession = json.decodeFromString<SportSession>(response)
         return response
     }
-    suspend fun greeting(): String {
-        val response = httpClient.get("https://ktor.io/docs/")
-        return response.bodyAsText()
-    }
+
+}
+sealed class SignInResult {
+    data class Success(val token: String) : SignInResult()
+    data class Error(val errorMessage: String) : SignInResult()
 }

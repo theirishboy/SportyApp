@@ -49,7 +49,6 @@ data class SignInScreen(val postId: Long) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel(UserDatabaseDAO()) })
-
         SignInForm(navigator,viewModel)
     }
 }
@@ -64,7 +63,7 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
         var acceptedTerms by remember { mutableStateOf(true) }
         val signInUiState by viewModel._signInUiState.collectAsState()
         val focus = LocalFocusManager.current
-
+        if (signInUiState.isConnected) navigator.push(HomeScreen(1))
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             containerColor = MaterialTheme.colorScheme.surface,
@@ -83,7 +82,7 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 UserEmailTextField(signInUiState, focus, viewModel)
                 Spacer(Modifier.height(8.dp))
                 UserPasswordField(errorMessage, signInUiState, focus, viewModel)
-                Spacer(Modifier.height(16.dp))
+                if (signInUiState.errorMessage == "")  Spacer(Modifier.height(16.dp)) else Text(signInUiState.errorMessage)
                 SignInButton(acceptedTerms, signInUiState, viewModel, coroutineScope, navigator)
             }
         }

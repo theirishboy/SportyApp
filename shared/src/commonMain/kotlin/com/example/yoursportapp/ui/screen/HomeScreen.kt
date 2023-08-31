@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -35,14 +38,30 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.icerock.moko.resources.compose.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.Exercise
 import com.example.yoursportapp.data.SportSession
+import com.example.yoursportapp.data.UserDatabaseDAO
+import dev.icerock.moko.mvvm.compose.getViewModel
+import dev.icerock.moko.mvvm.compose.viewModelFactory
 import kotlinx.datetime.LocalDate
 
 
+data class HomeScreen(val postId: Long) : Screen {
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel(UserDatabaseDAO()) })
+
+        HomeScreenForm(navigator,viewModel)
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(){
+fun HomeScreenForm(navigator: Navigator, viewModel: SignInViewModel) {
     val items = listOf("Exercises","Workout","Profile")
     val icons = listOf(SharedRes.images.format_list_bulleted_symbol,SharedRes.images.fitness_center_black_24dp,SharedRes.images.account_circle_black_24dp)
     Scaffold(
@@ -69,7 +88,15 @@ fun HomeScreen(){
                 }
             )
         },
-    ){innerPadding ->
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {}
+            ) {
+                Icon(Icons.Filled.Add,"")
+            }
+        }
+    ){
+            innerPadding ->
         SportSessionsList(innerPadding)
     }
 }

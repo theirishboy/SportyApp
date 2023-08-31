@@ -9,5 +9,5 @@ class Preview {
 @Preview
 @Composable
 fun HomeScreenPreviewMPP(){
-    com.example.yoursportapp.ui.screen.HomeScreen()
+    com.example.yoursportapp.ui.screen.HomeScreen(1)
 }
