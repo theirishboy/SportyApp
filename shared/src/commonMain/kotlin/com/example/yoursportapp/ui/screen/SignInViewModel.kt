@@ -7,14 +7,17 @@ import com.example.yoursportapp.ressources.RegexRules
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 data class SignInUiState(
     var email : String = "",
     var password : String = "",
-    var isConnected : Boolean = true,
+    var isConnected : Boolean = false,
     var errorMessage: String = "",
 )
-class SignInViewModel(private val userDao: UserDatabaseDAO) : ViewModel() {
+class SignInViewModel() : ViewModel(),KoinComponent {
+    private val userDao: UserDatabaseDAO by inject()
     var _signInUiState = MutableStateFlow(SignInUiState())
         private set
     suspend fun signIn(){

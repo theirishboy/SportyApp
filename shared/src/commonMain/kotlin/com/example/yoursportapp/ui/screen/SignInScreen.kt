@@ -48,7 +48,7 @@ data class SignInScreen(val postId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel(UserDatabaseDAO()) })
+        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel() })
         SignInForm(navigator,viewModel)
     }
 }

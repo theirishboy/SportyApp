@@ -59,7 +59,7 @@ data class SignUpScreen(val postId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getViewModel(Unit, viewModelFactory { SignUpViewModel(UserDatabaseDAO()) })
+        val viewModel = getViewModel(Unit, viewModelFactory { SignUpViewModel() })
 
         SignUpForm(navigator, viewModel)
     }
@@ -73,6 +73,8 @@ fun SignUpForm(navigator: Navigator, viewModel: SignUpViewModel) {
 
     val signUpUiState by viewModel._signUpUiState.collectAsState()
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
+
+    if (signUpUiState.isRegistered) navigator.push(SignUpScreen(0))
 
     @Composable
     fun TermsAndConditions() {

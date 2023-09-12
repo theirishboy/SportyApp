@@ -15,25 +15,24 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
 
-fun initKoin(appModule: Module): KoinApplication {
+fun initKoin(): KoinApplication {
     val koinApplication = startKoin {
         modules(
-            appModule,
             driverFactory,
             coreModule,
         )
     }
 
     // Dummy initialization logic, making use of appModule declarations for demonstration purposes.
-    val koin = koinApplication.koin
-    // doOnStartup is a lambda which is implemented in Swift on iOS side
-    val doOnStartup = koin.get<() -> Unit>()
-    doOnStartup.invoke()
-
-   // val kermit = koin.get<Logger> { parametersOf(null) }
-    // AppInfo is a Kotlin interface with separate Android and iOS implementations
-   // val appInfo = koin.get<AppInfo>()
-  //  kermit.v { "App Id ${appInfo.appId}" }
+//    val koin = koinApplication.koin
+//    // doOnStartup is a lambda which is implemented in Swift on iOS side
+//    val doOnStartup = koin.get<() -> Unit>()
+//    doOnStartup.invoke()
+//
+//   // val kermit = koin.get<Logger> { parametersOf(null) }
+//    // AppInfo is a Kotlin interface with separate Android and iOS implementations
+//   // val appInfo = koin.get<AppInfo>()
+//  //  kermit.v { "App Id ${appInfo.appId}" }
 
     return koinApplication
 }

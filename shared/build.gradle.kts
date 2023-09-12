@@ -15,6 +15,8 @@ kotlin {
     val ktorVersion = "2.3.3"
     val koin = "3.2.0"
     val voyagerVersion = "1.0.0-rc05"
+    val multiplatformSettings = "1.0.0"
+
     targetHierarchy.default()
 
     android {
@@ -59,7 +61,10 @@ kotlin {
 
                 implementation("io.insert-koin:koin-core:${koin}")
                 implementation("io.insert-koin:koin-test:${koin}")
+                implementation("io.insert-koin:koin-compose:1.0.4")
+
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")
+
                 api("dev.icerock.moko:mvvm-core:0.16.1") // only ViewModel, EventsDispatcher, Dispatchers.UI
                 api("dev.icerock.moko:mvvm-compose:0.16.1") // api mvvm-core, getViewModel for Compose Multiplatfrom
                 api("dev.icerock.moko:mvvm-test:0.16.1") // api mvvm-test
@@ -76,6 +81,10 @@ kotlin {
                 implementation(compose.material)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
+
+                // #1 - Basic settings
+                implementation("com.russhwolf:multiplatform-settings-no-arg:$multiplatformSettings")
+
 
 
             }

@@ -1,5 +1,7 @@
 package com.example.yoursportapp.data
 
+import com.example.yoursportapp.localstorage.KeyValueStorage
+import com.example.yoursportapp.localstorage.KeyValueStorageImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpTimeout
@@ -13,7 +15,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
-import org.koin.core.module.Module
 
 object HttpClientProvider {
     val httpClient = HttpClient {
@@ -35,6 +36,8 @@ object HttpClientProvider {
 expect val ApiUrl:String 
 class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient)   {
     private var token: UserToken = UserToken(null,null)
+    val keyValueStorage: KeyValueStorage = KeyValueStorageImpl()
+
 
     @Throws(Exception::class)
         suspend fun isServerUp(): String {
@@ -59,18 +62,20 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
                 }.bodyAsText()
             return if (response.contains("token")) {
+
+                val userToken:  UserToken  = Json.decodeFromString(response)
+                keyValueStorage.token = userToken.token
                 SignInResult.Success(response)
             } else {
-                SignInResult.Error("User not found")
+                SignInResult.Error("false username or password")
             }
         }   catch (e: IOException) {
-            println("Caught IOException: $e")
-            return SignInResult.Error("Internet Error")
+            return SignInResult.Error("Can't Connect to server")
         }  catch(e : Exception){
             return SignInResult.Error("Can't connect to server, it might be down look at : $e")
         }
     }
-    suspend fun signUp(firstname : String, lastname: String, email : String, password: String): String {
+    suspend fun signUp(firstname : String, lastname: String, email : String, password: String): SignUpResult {
         var response = ""
         try {
             response =
@@ -83,18 +88,20 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
 
                 }.bodyAsText()
-            if (response.contains("token"))
+
+            return if (response.contains("token"))
             {
-                token = Json.decodeFromString(response)
+                SignUpResult.Success(response)
+
+            } else {
+                SignUpResult.Error("Something is wrong")
             }
         }   catch (e: IOException) {
             println("Caught IOException: $e")
-            response = "NetworkException"
+            return SignUpResult.Error( "NetworkException")
         }  catch(e : Exception){
-            response = "Can't connect to server, it might be down look at : $e"
+            return SignUpResult.Error("Can't connect to server, it might be down look at : $e")
         }
-        println(response)
-        return response
 
     }
     @Throws(Exception::class)
@@ -118,4 +125,8 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 sealed class SignInResult {
     data class Success(val token: String) : SignInResult()
     data class Error(val errorMessage: String) : SignInResult()
+}
+sealed class SignUpResult {
+    data class Success(val token: String) : SignUpResult()
+    data class Error(val errorMessage: String) : SignUpResult()
 }

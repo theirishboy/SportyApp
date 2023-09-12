@@ -54,7 +54,7 @@ data class HomeScreen(val postId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel(UserDatabaseDAO()) })
+        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel() })
 
         HomeScreenForm(navigator,viewModel)
     }
@@ -90,7 +90,9 @@ fun HomeScreenForm(navigator: Navigator, viewModel: SignInViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {}
+                onClick = {},
+                contentColor =  MaterialTheme.colorScheme.primary,
+                containerColor = Color.White
             ) {
                 Icon(Icons.Filled.Add,"")
             }
@@ -155,7 +157,8 @@ fun SportSessionShortcut(sportSession: SportSession) {
                             contentDescription = "Session content"
                         )
                         Text(
-                            text = sportSession.exercises.size.toString(),
+                            text = sportSession.exercises.size.toString() +
+                                    if(sportSession.exercises.size > 1) "exercices" else "exercice",
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
