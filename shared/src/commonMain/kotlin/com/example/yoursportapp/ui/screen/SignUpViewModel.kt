@@ -1,6 +1,5 @@
 package com.example.yoursportapp.ui.screen
 
-import com.example.yoursportapp.data.SignInResult
 import com.example.yoursportapp.data.SignUpResult
 import com.example.yoursportapp.data.UserDatabaseDAO
 import com.example.yoursportapp.ressources.RegexRules

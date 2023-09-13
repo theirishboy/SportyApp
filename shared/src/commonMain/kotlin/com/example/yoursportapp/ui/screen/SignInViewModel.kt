@@ -2,7 +2,6 @@ package com.example.yoursportapp.ui.screen
 
 import com.example.yoursportapp.data.SignInResult
 import com.example.yoursportapp.data.UserDatabaseDAO
-import com.example.yoursportapp.data.UserToken
 import com.example.yoursportapp.ressources.RegexRules
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

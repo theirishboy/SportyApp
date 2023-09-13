@@ -1,6 +1,5 @@
 package com.example.yoursportapp.data
 
-import com.example.yoursportapp.localstorage.KeyValueStorage
 import com.example.yoursportapp.localstorage.KeyValueStorageImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -15,6 +14,8 @@ import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.errors.IOException
 import kotlinx.serialization.json.Json
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 object HttpClientProvider {
     val httpClient = HttpClient {
@@ -34,10 +35,10 @@ object HttpClientProvider {
 }
 
 expect val ApiUrl:String 
-class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient)   {
+class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient) : KoinComponent   {
     private var token: UserToken = UserToken(null,null)
-    val keyValueStorage: KeyValueStorage = KeyValueStorageImpl()
 
+    private val keyValueStorage: KeyValueStorageImpl by inject()
 
     @Throws(Exception::class)
         suspend fun isServerUp(): String {

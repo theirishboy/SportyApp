@@ -3,6 +3,7 @@ package com.example.yoursportapp
 import com.example.yoursportapp.data.UserDatabaseDAO
 import com.example.yoursportapp.data.UserDatabaseOfflineRepository
 import com.example.yoursportapp.data.UserMultiCanalRepository
+import com.example.yoursportapp.localstorage.KeyValueStorageImpl
 import io.ktor.util.logging.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.datetime.Clock
@@ -44,8 +45,12 @@ private val coreModule = module {
             Dispatchers.Default
         )
     }
-    single<UserDatabaseDAO> {
+    single {
         UserDatabaseDAO()
+
+    }
+    single {
+        KeyValueStorageImpl()
     }
     single<Clock> {
         Clock.System

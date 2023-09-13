@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import dev.icerock.moko.resources.compose.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -44,9 +43,9 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.yoursportapp.data.Exercise
 import com.example.yoursportapp.data.SportSession
-import com.example.yoursportapp.data.UserDatabaseDAO
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import dev.icerock.moko.resources.compose.painterResource
 import kotlinx.datetime.LocalDate
 
 
