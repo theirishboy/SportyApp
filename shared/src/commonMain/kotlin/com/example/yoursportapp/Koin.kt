@@ -14,31 +14,40 @@ import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
+import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
-
-fun initKoin(): KoinApplication {
-    val koinApplication = startKoin {
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) {
+    startKoin {
+        appDeclaration()
         modules(
             driverFactory,
             coreModule,
         )
     }
-
-    // Dummy initialization logic, making use of appModule declarations for demonstration purposes.
-//    val koin = koinApplication.koin
-//    // doOnStartup is a lambda which is implemented in Swift on iOS side
-//    val doOnStartup = koin.get<() -> Unit>()
-//    doOnStartup.invoke()
-//
-//   // val kermit = koin.get<Logger> { parametersOf(null) }
-//    // AppInfo is a Kotlin interface with separate Android and iOS implementations
-//   // val appInfo = koin.get<AppInfo>()
-//  //  kermit.v { "App Id ${appInfo.appId}" }
-
-    return koinApplication
 }
-
-private val coreModule = module {
+//fun initKoin(): KoinApplication {
+//    val koinApplication = startKoin {
+//        modules(
+//            driverFactory,
+//            coreModule,
+//        )
+//    }
+//
+//    // Dummy initialization logic, making use of appModule declarations for demonstration purposes.
+////    val koin = koinApplication.koin
+////    // doOnStartup is a lambda which is implemented in Swift on iOS side
+////    val doOnStartup = koin.get<() -> Unit>()
+////    doOnStartup.invoke()
+////
+////   // val kermit = koin.get<Logger> { parametersOf(null) }
+////    // AppInfo is a Kotlin interface with separate Android and iOS implementations
+////   // val appInfo = koin.get<AppInfo>()
+////  //  kermit.v { "App Id ${appInfo.appId}" }
+//
+//    return koinApplication
+//}
+fun appModule() = listOf(driverFactory, coreModule)
+val coreModule = module {
     single {
         UserDatabaseOfflineRepository(
             getWith("UserDatabaseOfflineRepository"),

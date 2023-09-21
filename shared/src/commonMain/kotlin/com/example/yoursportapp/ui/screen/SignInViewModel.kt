@@ -15,7 +15,7 @@ data class SignInUiState(
     var isConnected : Boolean = false,
     var errorMessage: String = "",
 )
-class SignInViewModel() : ViewModel(),KoinComponent {
+class SignInViewModel : ViewModel(),KoinComponent {
     private val userDao: UserDatabaseDAO by inject()
     var _signInUiState = MutableStateFlow(SignInUiState())
         private set

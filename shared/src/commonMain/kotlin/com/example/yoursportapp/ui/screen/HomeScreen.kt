@@ -31,6 +31,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +49,8 @@ import com.example.yoursportapp.data.SportSession
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
 import dev.icerock.moko.resources.compose.painterResource
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 
@@ -53,16 +58,21 @@ data class HomeScreen(val postId: Long) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = getViewModel(Unit, viewModelFactory { SignInViewModel() })
-
+        val viewModel = getViewModel(Unit, viewModelFactory { HomeScreenViewModel() })
         HomeScreenForm(navigator,viewModel)
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenForm(navigator: Navigator, viewModel: SignInViewModel) {
+fun HomeScreenForm(navigator: Navigator, viewModel: HomeScreenViewModel) {
     val items = listOf("Exercises","Workout","Profile")
     val icons = listOf(SharedRes.images.format_list_bulleted_symbol,SharedRes.images.fitness_center_black_24dp,SharedRes.images.account_circle_black_24dp)
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope.launch { viewModel.getAllSportSession() }
+    val sportSessionsList = viewModel._homeScreenUiState.collectAsState()
+
+
+
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -98,22 +108,20 @@ fun HomeScreenForm(navigator: Navigator, viewModel: SignInViewModel) {
         }
     ){
             innerPadding ->
-        SportSessionsList(innerPadding)
+        SportSessionsList(innerPadding, sportSessionsList)
     }
 }
 @Composable
-fun SportSessionsList(innerPadding: PaddingValues) {
-    val ExerciceList: MutableList<Exercise> = arrayListOf()
+fun SportSessionsList(innerPadding: PaddingValues, sportSessionsList: State<HomeScreenUiState>) {
     LazyColumn( modifier = Modifier.fillMaxSize(),
         contentPadding = innerPadding,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
-        items(count = 10 ){
+        items(count = sportSessionsList.value.allSportSession.size ){
             Spacer(modifier = Modifier.height(8.dp))
-            SportSessionShortcut(sportSession = SportSession(1, LocalDate(2023,12,31),"mondaySession",1,
-                ExerciceList))
+            SportSessionShortcut(sportSessionsList.value.allSportSession[it])
 
         }
     }
@@ -156,8 +164,9 @@ fun SportSessionShortcut(sportSession: SportSession) {
                             contentDescription = "Session content"
                         )
                         Text(
-                            text = sportSession.exercises.size.toString() +
-                                    if(sportSession.exercises.size > 1) "exercices" else "exercice",
+                            text = sportSession.exercises?.size.toString() +
+                                    if(sportSession.exercises != null
+                                        && sportSession.exercises.size > 1) "exercices" else "exercice",
                             style = MaterialTheme.typography.bodyMedium,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1

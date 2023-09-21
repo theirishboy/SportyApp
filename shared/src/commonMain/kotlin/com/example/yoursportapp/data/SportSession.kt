@@ -13,8 +13,11 @@ data class SportSession(
     val date: LocalDate,
     @SerialName("name")
     val name: String,
-    @SerialName("user")
-    val user: Int,
     @SerialName("exercises")
-    val exercises : MutableList<Exercise>
-    )
+    val exercises : MutableList<Exercise>? = null
+    ){
+    constructor(id: Int, date: LocalDate, name: String)
+            : this(id,date,name,null) {
+
+    }
+}

@@ -13,7 +13,7 @@ class UserMultiCanalRepository(
         userApi.signIn(username, password)
     }
     suspend fun getUserSportSession(username:String, password:String) {
-        userApi.getSportSession()
+        userApi.getOneSportSession()
     }
     suspend fun isServerUp(username:String, password:String) {
         userApi.isServerUp()

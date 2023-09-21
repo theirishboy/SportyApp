@@ -13,7 +13,7 @@ plugins {
 kotlin {
     val mokoResourceVersion = extra["moko.version.resources"] as String
     val ktorVersion = "2.3.3"
-    val koin = "3.2.0"
+    val koin = "3.3.1"
     val voyagerVersion = "1.0.0-rc05"
     val multiplatformSettings = "1.0.0"
 
@@ -60,7 +60,7 @@ kotlin {
                 implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:$1.9.0")
 
                 implementation("io.insert-koin:koin-core:${koin}")
-                implementation("io.insert-koin:koin-test:${koin}")
+                implementation("io.insert-koin:koin-test:3.2.0")
                 implementation("io.insert-koin:koin-compose:1.0.4")
 
                 implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")

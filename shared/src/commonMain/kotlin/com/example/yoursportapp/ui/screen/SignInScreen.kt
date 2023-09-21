@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -81,10 +82,20 @@ fun SignInForm(navigator: Navigator, viewModel: SignInViewModel,
                 UserEmailTextField(signInUiState, focus, viewModel)
                 Spacer(Modifier.height(8.dp))
                 UserPasswordField(errorMessage, signInUiState, focus, viewModel)
-                if (signInUiState.errorMessage == "")  Spacer(Modifier.height(16.dp)) else Text(signInUiState.errorMessage)
+                if (signInUiState.errorMessage == "")  Spacer(Modifier.height(16.dp)) else
+                    signInErrorMessage(signInUiState)
                 SignInButton(acceptedTerms, signInUiState, viewModel, coroutineScope, navigator)
             }
         }
+}
+
+@Composable
+fun signInErrorMessage(signInUiState: SignInUiState) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = signInUiState.errorMessage,
+        color = Color.Red )
+    Spacer(Modifier.height(16.dp))
 }
 
 @Composable

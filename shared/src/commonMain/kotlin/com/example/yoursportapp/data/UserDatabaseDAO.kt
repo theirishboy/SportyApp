@@ -36,7 +36,6 @@ object HttpClientProvider {
 
 expect val ApiUrl:String 
 class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.httpClient) : KoinComponent   {
-    private var token: UserToken = UserToken(null,null)
 
     private val keyValueStorage: KeyValueStorageImpl by inject()
 
@@ -71,7 +70,7 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
                 SignInResult.Error("false username or password")
             }
         }   catch (e: IOException) {
-            return SignInResult.Error("Can't Connect to server")
+            return SignInResult.Error("Can't Connect to server + $e")
         }  catch(e : Exception){
             return SignInResult.Error("Can't connect to server, it might be down look at : $e")
         }
@@ -92,7 +91,7 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
             return if (response.contains("token"))
             {
-                SignUpResult.Success(response)
+                SignUpResult.Success(Json.decodeFromString(response))
 
             } else {
                 SignUpResult.Error("Something is wrong")
@@ -106,13 +105,13 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
 
     }
     @Throws(Exception::class)
-    suspend fun getSportSession(): String {
+    suspend fun getOneSportSession(): String {
 
         val response =
-            httpClient.get(ApiUrl + ApiRoutes.SPORT_SESSION + "/1"){
+            httpClient.get(ApiUrl + ApiRoutes.SPORT_SESSION_BY_ID + "/1"){
                 headers {
                     append(HttpHeaders.Accept, "application/json")
-                    append(HttpHeaders.Authorization, ("bearer " + token.token))
+                    append(HttpHeaders.Authorization, ("bearer " + keyValueStorage.token ))
                 }
 
 
@@ -122,12 +121,43 @@ class UserDatabaseDAO(private val httpClient: HttpClient = HttpClientProvider.ht
         return response
     }
 
+    @Throws(Exception::class)
+    suspend fun getAllSportSessionFromUser(): MutableList<SportSession> {
+        var result = arrayListOf<SportSession>()
+        var response = ""
+        try {
+             response =
+                httpClient.get(ApiUrl + ApiRoutes.SPORT_SESSION_ALL) {
+                    headers {
+                        append(HttpHeaders.Accept, "application/json")
+                        append(HttpHeaders.Authorization, ("bearer " + keyValueStorage.token))
+                    }
+
+
+                }.bodyAsText()
+        }
+        catch (e : Exception){
+            println("Caught Exception: $e")
+        }
+        val json = Json { ignoreUnknownKeys = true }
+        try {
+            println(result)
+            result = json.decodeFromString(response)
+        } catch (e : IOException){
+            println("Caught IOException: $e")
+
+        } catch (e : Exception){
+            println("Caught IOException: $e")}
+
+        return result
+    }
+
 }
 sealed class SignInResult {
     data class Success(val token: String) : SignInResult()
     data class Error(val errorMessage: String) : SignInResult()
 }
 sealed class SignUpResult {
-    data class Success(val token: String) : SignUpResult()
+    data class Success(val listOfSportSessions: MutableList<SportSession> ) : SignUpResult()
     data class Error(val errorMessage: String) : SignUpResult()
 }

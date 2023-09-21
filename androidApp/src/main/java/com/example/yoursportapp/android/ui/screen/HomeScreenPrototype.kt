@@ -2,8 +2,10 @@ package com.example.yoursportapp.android.ui.screen
 
 import YourSportApp.shared.SharedRes
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
@@ -32,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import dev.icerock.moko.resources.compose.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +86,6 @@ fun SportSessionsList(innerPadding: PaddingValues) {
 
     ) {
         items(count = 10 ){
-            Spacer(modifier = Modifier.height(8.dp))
             SportSessionShortcut()
 
         }
@@ -90,20 +94,19 @@ fun SportSessionsList(innerPadding: PaddingValues) {
 }
 @Composable
 fun SportSessionShortcut() {
-    Box(
-        modifier = Modifier.height(110.dp).fillMaxSize(0.95f),
-        contentAlignment = Alignment.Center
-    ) {
-        Card() {
+     Surface(onClick = { /* TODO */ }, shape = MaterialTheme.shapes.large)
+     {
+
             Row(
                 modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+
             ) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(0.7f)) {
                     Row {
                         Text(
-                            text = "Nom",
+                            text = "Exercice 1",
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold ,
                             overflow = TextOverflow.Ellipsis,
@@ -111,37 +114,29 @@ fun SportSessionShortcut() {
                         )
                     }
                     Row {
-                        Image(painterResource(SharedRes.images.calendar_today_symbol), modifier = Modifier.size(16.dp), contentDescription = "Date")
-                    Text(
-                        text = "Date rewrerewrw erew rwwe hguyguyguguyguygujyguj ",
-                        style = MaterialTheme.typography.bodyMedium,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )}
-                    Row {
                         Image(
                             painterResource(SharedRes.images.exercise_symbole),
                             modifier = Modifier.size(16.dp),
                             contentDescription = "Session content"
                         )
+                        Spacer(modifier = Modifier.size(5.dp))
+
                         Text(
-                            text = "nb exo",
+                            text = "6 x 3",
                             style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold ,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1
                         )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "rest : 60s",
+                            textAlign = TextAlign.End,
+                            style = MaterialTheme.typography.bodyMedium,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1)
                     }
 
-                }
-                Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.weight(0.3f)) {
-                    Button(
-                        onClick = {},
-                        enabled = true,
-                        shape = RoundedCornerShape(10.dp),
-                        modifier = Modifier.padding(10.dp).fillMaxSize(),
-                        ) {
-                        Image(painter = painterResource(SharedRes.images.east_black_24dp), contentDescription = "go to workout")
-                    }
                 }
 
 
@@ -149,7 +144,7 @@ fun SportSessionShortcut() {
 
             }
         }
-    }
+
 }
 @Preview
 @Composable
